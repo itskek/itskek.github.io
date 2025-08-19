@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Руководство по PBR шейдеру для Garry's Mod</title>
+    <style>
+        /* Используем системный шрифт Apple (San Francisco) и его аналоги */
+        :root {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        /* ДОБАВЛЕНО: Плавная прокрутка для всей страницы */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            color: #f5f5f7; /* Стандартный почти-белый цвет текста Apple */
+            line-height: 1.6;
+            margin: 0;
+            padding: 50px 20px;
+            background: linear-gradient(45deg, #000000, #4b0082, #000000);
+            background-size: 200% 200%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            
+            /* Эффект стекла в стиле iOS */
+            background: rgba(45, 45, 45, 0.7);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            
+            padding: 15px 35px 35px 35px;
+            border-radius: 35px; /* Сильное скругление в стиле iOS */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        h1, h2, h3 {
+            color: #ffffff; /* Чистый белый для заголовков */
+            font-weight: 600;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.7em;
+            padding-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        h2 {
+            font-size: 1.9em;
+            margin-top: 45px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h3 {
+            font-size: 1.3em;
+        }
+
+        code {
+            background-color: rgba(120, 120, 128, 0.2);
+            color: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-family: "SF Mono", "Menlo", "Courier New", Courier, monospace;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background-color: rgba(20, 20, 20, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 20px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #e5e5e5;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        pre code {
+            padding: 0;
+            background: none;
+        }
+
+        .warning, .important {
+            background-color: rgba(255, 69, 58, 0.15); /* Стандартный красный iOS с прозрачностью */
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 20px;
+        }
+
+        .warning h3, .important h3 {
+            color: #ff453a; /* Яркий красный iOS */
+            margin: 0 0 5px 0;
+            font-weight: 600;
+        }
+
+        a {
+            color: #bf5af2; /* Стандартный фиолетовый iOS */
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .button-link {
+            display: block; /* Кнопка на всю ширину */
+            background: #bf5af2;
+            color: #fff;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 50px; /* Форма капсулы */
+            margin: 20px auto;
+            max-width: 300px;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .button-link:hover {
+            text-decoration: none;
+            transform: scale(1.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(120, 120, 128, 0.2);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        th {
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            font-size: 0.9em;
+            color: rgba(235, 235, 245, 0.6);
+            border-top: 1px solid rgba(120, 120, 128, 0.2);
+        }
+        .footer a {
+            color: rgba(235, 235, 245, 0.8);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>PBR Shader Guide</h1>
+        <p style="text-align: center; max-width: 600px; margin: 10px auto 30px; color: rgba(235, 235, 245, 0.6);">Полное руководство по установке и настройке реалистичного PBR шейдера для Garry's Mod.</p>
+
+        <div class="warning">
+            <h3>АХТУНГ! Важный момент</h3>
+            <p style="margin: 0;">x64 версия GMod'а <b>не поддерживается</b>. Для работы шейдера используйте обычную версию игры, ветку <b>pre-release</b> или <b>dev</b>.</p>
+        </div>
+
+        <h2>Как поставить эту красоту</h2>
+        <p>Установка простая: скачайте и запустите <code>.bat</code>-файл. Он автоматически установит все необходимые модули для работы шейдера.</p>
+        <a href="https://github.com/itskek/GPBR/blob/main/InstallPBRModules.bat" class="button-link" download="InstallPBRModules.bat">Скачать .BAT файл</a>
+
+        <h2>Что такое PBR?</h2>
+        <p><b>PBR (Physically Based Rendering)</b> — это современный шейдер, портированный из Strata Source, который делает освещение и материалы в игре значительно реалистичнее. Он работает как на моделях, так и на брашах (стенах, полах), используя набор специальных PBR-текстур.</p>
+        
+        <h2>Настройки в VMT-файле</h2>
+        <p>Ниже перечислены основные параметры для настройки материалов в <code>.vmt</code> файлах.</p>
+
+        <h3>Основа</h3>
+        <ul>
+            <li><code>$basetexture</code> — Основная цветная текстура (Albedo).</li>
+            <li><code>$bumpmap</code> — Карта нормалей для имитации рельефа.</li>
+        </ul>
+
+        <h3>PBR Карты</h3>
+        <ul>
+            <li><code>$mraotexture</code> — Карта, содержащая <b>(R)</b> Metallic, <b>(G)</b> Roughness, <b>(B)</b> Ambient Occlusion.</li>
+            <li><code>$emissiontexture</code> — Карта свечения. Должна быть цветной.</li>
+        </ul>
+        
+        <h3>Параллакс</h3>
+        <ul>
+            <li><code>$parallax</code> — Включает эффект глубины. Требует карту высот в альфа-канале нормалей.</li>
+            <li><code>$parallaxdepth</code> — Глубина эффекта. Рекомендуется <code>0.1</code>.</li>
+        </ul>
+        
+        <h3>Прочее</h3>
+        <ul>
+            <li><code>$model 1</code> — <b>Обязательный параметр</b> для материалов на моделях.</li>
+            <li><code>$alphatestreference</code> — Порог прозрачности для материалов вроде решеток или листвы.</li>
+        </ul>
+        
+        <div class="important">
+            <h3>ЭТО ВАЖНО</h3>
+            <ol style="padding-left: 20px;">
+                <li style="margin-bottom: 10px;">Карты с PBR-шейдером запускайте <b>только через консоль</b> командой <code>map имя_карты</code>. Запуск через главное меню может привести к вылету.</li>
+                <li>Для корректного освещения моделей введите в консоль <code>r_PhysPropStaticLighting 0</code>. Рекомендуется добавить эту команду в ваш <code>autoexec.cfg</code>.</li>
+            </ol>
+        </div>
+
+        <h3>Пример VMT-файла</h3>
+        <pre><code class="language-vmt">"PBR"
+{
+    "$basetexture"      "models/example/gun_albedo"
+    "$bumpmap"          "models/example/gun_normal"
+    "$mraotexture"      "models/example/gun_mrao"
+    "$emissiontexture"  "models/example/gun_emission"
+
+    "$model"            "1"
+    "$surfaceprop"      "metal"
+}</code></pre>
+        
+        <h2>Форматы Текстур</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Тип текстуры</th>
+                    <th>Рекомендуемый формат</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Albedo / Emission</td>
+                    <td><code>DXT5</code></td>
+                </tr>
+                <tr>
+                    <td>MRAO / Specular</td>
+                    <td><code>DXT1</code></td>
+                </tr>
+                <tr>
+                    <td>Normal Map</td>
+                    <td><code>BGRA8888</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <p>Оригинальный мод и информация от Cpt-Hazama</p>
+            <p><a href="https://github.com/Cpt-Hazama/GMod-PBR-Modules" target="_blank" rel="noopener noreferrer">GMod-PBR-Modules на GitHub</a></p>
+        </div>
+    </div>
+
+</body>
+</html>
