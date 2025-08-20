@@ -1,271 +1,247 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Руководство по PBR шейдеру для Garry's Mod</title>
-    <style>
-        /* Используем системный шрифт Apple (San Francisco) и его аналоги */
-        :root {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        
-        /* ДОБАВЛЕНО: Плавная прокрутка для всей страницы */
-        html {
-            scroll-behavior: smooth;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kek's home</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-        body {
-            color: #f5f5f7; /* Стандартный почти-белый цвет текста Apple */
-            line-height: 1.6;
-            margin: 0;
-            padding: 50px 20px;
-            background: linear-gradient(45deg, #000000, #4b0082, #000000);
-            background-size: 200% 200%;
-            animation: gradientBG 15s ease infinite;
-            min-height: 100vh;
-        }
+:root {
+    --background-color: #000000;
+    --text-color: #e0e0e0;
+    --accent-color: #9370DB;
+    --glass-bg: rgba(25, 25, 25, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --border-radius: 20px;
+}
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        .container {
-            max-width: 800px;
-            margin: auto;
-            
-            /* Эффект стекла в стиле iOS */
-            background: rgba(45, 45, 45, 0.7);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            
-            padding: 15px 35px 35px 35px;
-            border-radius: 35px; /* Сильное скругление в стиле iOS */
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    background-image: radial-gradient(circle at 1% 1%, rgba(147, 112, 219, 0.2), transparent 30%),
+                      radial-gradient(circle at 99% 99%, rgba(147, 112, 219, 0.2), transparent 40%);
+    background-attachment: fixed;
+    line-height: 1.6;
+    padding: 2rem;
+    transition: padding 0.3s ease;
+}
 
-        h1, h2, h3 {
-            color: #ffffff; /* Чистый белый для заголовков */
-            font-weight: 600;
-        }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-        h1 {
-            text-align: center;
-            font-size: 2.7em;
-            padding-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        h2 {
-            font-size: 1.9em;
-            margin-top: 45px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 4rem;
+}
 
-        h3 {
-            font-size: 1.3em;
-        }
+.header-main-logo {
+    height: 60px; /* Main header */
+    width: auto;
+    margin-bottom: 0.5rem;
+}
 
-        code {
-            background-color: rgba(120, 120, 128, 0.2);
-            color: #f0f0f0;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-family: "SF Mono", "Menlo", "Courier New", Courier, monospace;
-            font-size: 0.95em;
-        }
+.header-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    max-width: 500px;
+    margin-bottom: 0.5rem;
+}
 
-        pre {
-            background-color: rgba(20, 20, 20, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 20px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            color: #e5e5e5;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        pre code {
-            padding: 0;
-            background: none;
-        }
+.header-logos {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
 
-        .warning, .important {
-            background-color: rgba(255, 69, 58, 0.15); /* Стандартный красный iOS с прозрачностью */
-            padding: 20px;
-            margin: 25px 0;
-            border-radius: 20px;
-        }
+.header-logo {
+    height: 120px;
+    width: auto;
+}
 
-        .warning h3, .important h3 {
-            color: #ff453a; /* Яркий красный iOS */
-            margin: 0 0 5px 0;
-            font-weight: 600;
-        }
+.workshop-link img {
+    display: block;
+    height: 130px;
+    width: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        a {
-            color: #bf5af2; /* Стандартный фиолетовый iOS */
-            text-decoration: none;
-            font-weight: 500;
-        }
+.workshop-link:hover img {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
 
-        a:hover {
-            text-decoration: underline;
-        }
-        
-        .button-link {
-            display: block; /* Кнопка на всю ширину */
-            background: #bf5af2;
-            color: #fff;
-            padding: 15px;
-            font-size: 1.1em;
-            font-weight: 600;
-            text-align: center;
-            border-radius: 50px; /* Форма капсулы */
-            margin: 20px auto;
-            max-width: 300px;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        .button-link:hover {
-            text-decoration: none;
-            transform: scale(1.05);
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 20px;
-        }
+main h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+    color: var(--accent-color);
+}
 
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(120, 120, 128, 0.2);
-        }
-        
-        tr:last-child td {
-            border-bottom: none;
-        }
-        
-        th {
-            font-weight: 600;
-        }
+.mods-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
 
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            font-size: 0.9em;
-            color: rgba(235, 235, 245, 0.6);
-            border-top: 1px solid rgba(120, 120, 128, 0.2);
-        }
-        .footer a {
-            color: rgba(235, 235, 245, 0.8);
-        }
+.mod-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
 
-    </style>
+.mod-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 16px 40px 0 rgba(0,0,0,0.5);
+}
+
+.mod-card-image {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    background-color: #333;
+}
+
+.mod-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.mod-card p {
+    font-size: 1rem;
+    color: var(--text-color);
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+}
+
+.mod-card .download-btn {
+    display: inline-block;
+    text-align: center;
+    background-color: var(--accent-color);
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.mod-card .download-btn:hover {
+    background-color: #8A2BE2;
+}
+
+/* Responsive for mobile, dammit */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem;
+    }
+    .mods-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
 </head>
 <body>
+<div class="container">
+    <header>
+        <img src="https://github.com/itskek/itskek.github.io/blob/main/Untitled-2.png?raw=true" alt="kek's home" class="header-main-logo">
 
-    <div class="container">
-        <h1>PBR Shader Guide</h1>
-        <p style="text-align: center; max-width: 600px; margin: 10px auto 30px; color: rgba(235, 235, 245, 0.6);">Полное руководство по установке и настройке реалистичного PBR шейдера для Garry's Mod.</p>
-
-        <div class="warning">
-            <h3>АХТУНГ! Важный момент</h3>
-            <p style="margin: 0;">x64 версия GMod'а <b>не поддерживается</b>. Для работы шейдера используйте обычную версию игры, ветку <b>pre-release</b> или <b>dev</b>.</p>
+        <div class="header-logos">
+            <img src="https://github.com/itskek/itskek.github.io/blob/main/Pasted-20250819-225438_pixian_ai.png?raw=true" alt="Logo2" class="header-logo">
         </div>
 
-        <h2>Как поставить эту красоту</h2>
-        <p>Установка простая: скачайте и запустите <code>.bat</code>-файл. Он автоматически установит все необходимые модули для работы шейдера.</p>
-        <a href="https://github.com/itskek/GPBR/blob/main/InstallPBRModules.bat" class="button-link" download="InstallPBRModules.bat">Скачать .BAT файл</a>
+        <p class="header-subtitle" data-key="subtitle">My website with my mods (maybe even ones that aren't in the workshop).</p>
 
-        <h2>Что такое PBR?</h2>
-        <p><b>PBR (Physically Based Rendering)</b> — это современный шейдер, портированный из Strata Source, который делает освещение и материалы в игре значительно реалистичнее. Он работает как на моделях, так и на брашах (стенах, полах), используя набор специальных PBR-текстур.</p>
-        
-        <h2>Настройки в VMT-файле</h2>
-        <p>Ниже перечислены основные параметры для настройки материалов в <code>.vmt</code> файлах.</p>
+        <a href="https://steamcommunity.com/id/itskkek/myworkshopfiles/?appid=4000" target="_blank" rel="noopener noreferrer" class="workshop-link">
+            <img src="https://vgtimes.ru/uploads/tags_images/steam-workshop-4348.jpg" alt="Steam Workshop">
+        </a>
+    </header>
 
-        <h3>Основа</h3>
-        <ul>
-            <li><code>$basetexture</code> — Основная цветная текстура (Albedo).</li>
-            <li><code>$bumpmap</code> — Карта нормалей для имитации рельефа.</li>
-        </ul>
+    <main>
+        <h2 data-key="mods_title">My Mods</h2>
+        <div class="mods-grid">
+            <div class="mod-card">
+                <img src="https://images.steamusercontent.com/ugc/17381572570822773543/FE33697ACC0F69729A22AD516AC0297B01AF6A5F/?imw=512&imh=512&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true" alt="PBR Shader for GMod" class="mod-card-image">
+                <h3 data-key="pbr_title">PBR Shader for GMod</h3>
+                <p data-key="pbr_desc">Advanced shader that makes lighting and materials in the game more realistic. WARNING: doesn't work with x64 GMod!</p>
+                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3552052136" target="_blank" rel="noopener noreferrer" class="download-btn" data-key="workshop_btn">Workshop Page</a>
+            </div>
 
-        <h3>PBR Карты</h3>
-        <ul>
-            <li><code>$mraotexture</code> — Карта, содержащая <b>(R)</b> Metallic, <b>(G)</b> Roughness, <b>(B)</b> Ambient Occlusion.</li>
-            <li><code>$emissiontexture</code> — Карта свечения. Должна быть цветной.</li>
-        </ul>
-        
-        <h3>Параллакс</h3>
-        <ul>
-            <li><code>$parallax</code> — Включает эффект глубины. Требует карту высот в альфа-канале нормалей.</li>
-            <li><code>$parallaxdepth</code> — Глубина эффекта. Рекомендуется <code>0.1</code>.</li>
-        </ul>
-        
-        <h3>Прочее</h3>
-        <ul>
-            <li><code>$model 1</code> — <b>Обязательный параметр</b> для материалов на моделях.</li>
-            <li><code>$alphatestreference</code> — Порог прозрачности для материалов вроде решеток или листвы.</li>
-        </ul>
-        
-        <div class="important">
-            <h3>ЭТО ВАЖНО</h3>
-            <ol style="padding-left: 20px;">
-                <li style="margin-bottom: 10px;">Карты с PBR-шейдером запускайте <b>только через консоль</b> командой <code>map имя_карты</code>. Запуск через главное меню может привести к вылету.</li>
-                <li>Для корректного освещения моделей введите в консоль <code>r_PhysPropStaticLighting 0</code>. Рекомендуется добавить эту команду в ваш <code>autoexec.cfg</code>.</li>
-            </ol>
+            <div class="mod-card">
+                <img src="https://images.steamusercontent.com/ugc/16000326308551574535/BEE313A0EB9E15E37F421DBDE0A2B88C4B2428FD/?imw=512&imh=512&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true" alt="Camera Animations For Default Weapons" class="mod-card-image">
+                <h3 data-key="cafdw_title">Camera Animations [CAFDW]</h3>
+                <p data-key="cafdw_desc">Adds camera animations via the muzzle attachment on viewmodel. Animation code based on MWB.</p>
+                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3547817894" target="_blank" rel="noopener noreferrer" class="download-btn" data-key="workshop_btn">Workshop Page</a>
+            </div>
+
+            <div class="mod-card">
+                <img src="https://images.steamusercontent.com/ugc/17770087578736201155/5A59EB121B9F11CD95687B1D15E51D1F646F648D/?imw=512&imh=512&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true" alt="Improvement Ragdoll Physics" class="mod-card-image">
+                <h3 data-key="ragdoll_title">Improvement Ragdoll Physics</h3>
+                <p data-key="ragdoll_desc">Improves ragdoll physics with realistic body behavior for natural movements, falls, and hit reactions.</p>
+                <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3534339558" target="_blank" rel="noopener noreferrer" class="download-btn" data-key="workshop_btn">Workshop Page</a>
+            </div>
         </div>
+    </main>
+</div>
 
-        <h3>Пример VMT-файла</h3>
-        <pre><code class="language-vmt">"PBR"
-{
-    "$basetexture"      "models/example/gun_albedo"
-    "$bumpmap"          "models/example/gun_normal"
-    "$mraotexture"      "models/example/gun_mrao"
-    "$emissiontexture"  "models/example/gun_emission"
+<script>
+// Our fucking translation system
+const translations = {
+    ru: {
+        subtitle: "Мой сайт с моими модами (возможно, даже теми, которых нет в мастерской).",
+        mods_title: "Мои моды",
+        pbr_title: "PBR Шейдер для GMod",
+        pbr_desc: "Продвинутый шейдер, делающий освещение и материалы в игре реалистичнее. ВАЖНО: не работает с x64 версией GMod!",
+        cafdw_title: "Camera Animations [CAFDW]",
+        cafdw_desc: "Этот мод добавляет анимации камеры за счёт \"muzzle\" аттачмента во viewmodel. Код анимации основан на MWB.",
+        ragdoll_title: "Improvement Ragdoll Physics",
+        ragdoll_desc: "Мод, улучшающий физику рэгдоллов. Основан на реалистичном поведении тел, обеспечивает более естественные движения, падения и реакции на удары.",
+        workshop_btn: "Страница в Мастерской",
+    }
+};
 
-    "$model"            "1"
-    "$surfaceprop"      "metal"
-}</code></pre>
-        
-        <h2>Форматы Текстур</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Тип текстуры</th>
-                    <th>Рекомендуемый формат</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Albedo / Emission</td>
-                    <td><code>DXT5</code></td>
-                </tr>
-                <tr>
-                    <td>MRAO / Specular</td>
-                    <td><code>DXT1</code></td>
-                </tr>
-                <tr>
-                    <td>Normal Map</td>
-                    <td><code>BGRA8888</code></td>
-                </tr>
-            </tbody>
-        </table>
+// Get the browser language, yo
+const userLang = navigator.language || navigator.userLanguage;
 
-        <div class="footer">
-            <p>Оригинальный мод и информация от Cpt-Hazama</p>
-            <p><a href="https://github.com/Cpt-Hazama/GMod-PBR-Modules" target="_blank" rel="noopener noreferrer">GMod-PBR-Modules на GitHub</a></p>
-        </div>
-    </div>
-
+// If the language is Russian, start the machine
+if (userLang.startsWith('ru')) {
+    // Find all elements with the data-key attribute
+    document.querySelectorAll('[data-key]').forEach(element => {
+        const key = element.getAttribute('data-key');
+        // Check if this key exists in our translation dictionary
+        if (translations.ru[key]) {
+            element.textContent = translations.ru[key];
+        }
+    });
+}
+</script>
 </body>
 </html>
